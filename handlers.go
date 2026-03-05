@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 )
 
@@ -12,12 +13,14 @@ type HealthResponse struct {
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 
 	response := HealthResponse{
 		Status:  "UP",
 		Message: "Service is healthy",
 	}
 
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		slog.Error("Failed to encode response", "error", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
+	}
 }

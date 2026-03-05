@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 )
 
@@ -16,36 +15,40 @@ type HealthResponse struct {
 }
 
 func (a *App) HealthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	response := HealthResponse{
 		Status:  "UP",
 		Message: "Service is healthy",
 	}
 
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		slog.Error("Failed to encode response", "error", err)
+	data, err := json.Marshal(response)
+	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
 type VersionResponse struct {
 	Version   string `json:"version"`
 	Commit    string `json:"commit"`
-	BuildTime string `json:"buildtime"`
+	BuildTime string `json:"build_time"`
 }
 
 func (a *App) VersionHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	response := VersionResponse{
 		Version:   a.config.Version,
 		Commit:    a.config.Commit,
 		BuildTime: a.config.BuildTime,
 	}
 
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		slog.Error("Failed to encode response", "error", err)
+	data, err := json.Marshal(response)
+	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }

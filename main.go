@@ -11,13 +11,15 @@ import (
 )
 
 func main() {
-	cfg := NewConfig()
-
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
+	cfg := NewConfig()
+	app := &App{config: cfg}
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", HealthHandler)
+
+	mux.HandleFunc("GET /healthz", app.HealthHandler)
+	mux.HandleFunc("GET /version", app.VersionHandler)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

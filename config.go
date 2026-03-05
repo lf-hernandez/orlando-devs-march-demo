@@ -25,7 +25,10 @@ func NewConfig() Config {
 	}
 
 	return Config{
-		Port: port,
-		Env:  env,
+		Port:      port,
+		Env:       env,
+		Version:   Version,
+		Commit:    Commit,
+		BuildTime: BuildTime,
 	}
 }

@@ -52,3 +52,26 @@ func (a *App) VersionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
 }
+
+type FeatureFlagsResponse struct {
+	FfA bool `json:"ff_a"`
+	FfB bool `json:"ff_b"`
+	FfC bool `json:"ff_c"`
+}
+
+func (a *App) FeatureFlagsHandler(w http.ResponseWriter, r *http.Request) {
+	response := FeatureFlagsResponse{
+		FfA: a.config.FfA,
+		FfB: a.config.FfB,
+		FfC: a.config.FfC,
+	}
+
+	data, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -20,6 +21,7 @@ func main() {
 
 	mux.HandleFunc("GET /healthz", app.HealthHandler)
 	mux.HandleFunc("GET /version", app.VersionHandler)
+	mux.HandleFunc("GET /flags", app.FeatureFlagsHandler)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
@@ -34,7 +36,7 @@ func main() {
 
 	go func() {
 		slog.Info("Server listening", "port", cfg.Port)
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			slog.Error("Server error", "error", err)
 			os.Exit(1)
 		}

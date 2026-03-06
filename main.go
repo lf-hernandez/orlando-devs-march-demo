@@ -21,7 +21,7 @@ func main() {
 
 	mux.HandleFunc("GET /healthz", app.HealthHandler)
 	mux.HandleFunc("GET /version", app.VersionHandler)
-	mux.HandleFunc("GET /flags", app.FeatureFlagsHandler)
+	mux.HandleFunc("GET /feature-flags", app.FeatureFlagsHandler)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

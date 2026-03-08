@@ -1,5 +1,7 @@
 # Git Branching Strategies Demo - ODevs March 2026
 
+[![ci](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/ci.yml)
+
 ## Getting Started
 
 ### To build and run locally:

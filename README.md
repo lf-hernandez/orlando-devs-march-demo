@@ -2,6 +2,8 @@
 
 [![ci](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/ci.yml)
 
+[![cd (trunk-based)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-trunk-based.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-trunk-based.yml)
+
 ## Getting Started
 
 ### To build and run locally:

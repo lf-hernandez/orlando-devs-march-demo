@@ -19,7 +19,7 @@ func main() {
 	app := &App{config: cfg}
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /healthz", app.HealthHandler)
+	mux.HandleFunc("GET /health", app.HealthHandler)
 	mux.HandleFunc("GET /version", app.VersionHandler)
 	mux.HandleFunc("GET /feature-flags", app.FeatureFlagsHandler)
 

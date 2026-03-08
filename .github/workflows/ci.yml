@@ -11,14 +11,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Go
-        uses: actions/setup-go@v6
+      - uses: actions/setup-go@v6
         with:
-          go-version: '1.26'
-      - name: Display Go version
-        run: go version
-      - name: Download dependencies
-        run: go mod download
+          go-version-file: 'go.mod'
+          cache: true
       - name: Verify dependencies
         run: go mod verify
       - name: Run go vet
@@ -26,4 +22,4 @@ jobs:
       - name: Build
         run: go build ./...
       - name: Run tests
-        run: go test -race ./...
+        run: go test -race -count=1 -timeout=120s ./...

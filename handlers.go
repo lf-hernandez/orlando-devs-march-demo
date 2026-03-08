@@ -20,14 +20,8 @@ func (a *App) HealthHandler(w http.ResponseWriter, r *http.Request) {
 		Message: "Service is healthy",
 	}
 
-	data, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 type VersionResponse struct {
@@ -43,14 +37,8 @@ func (a *App) VersionHandler(w http.ResponseWriter, r *http.Request) {
 		BuildTime: a.config.BuildTime,
 	}
 
-	data, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 type FeatureFlagsResponse struct {
@@ -66,12 +54,6 @@ func (a *App) FeatureFlagsHandler(w http.ResponseWriter, r *http.Request) {
 		FfC: a.config.FfC,
 	}
 
-	data, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(data)
+	json.NewEncoder(w).Encode(response)
 }

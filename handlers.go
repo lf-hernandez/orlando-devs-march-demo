@@ -57,3 +57,16 @@ func (a *App) FeatureFlagsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
+
+type HelloResponse struct {
+	Message string `json:"message"`
+}
+
+func (a *App) HelloHandler(w http.ResponseWriter, r *http.Request) {
+	response := HelloResponse{
+		Message: "Hello, ODevs!",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}

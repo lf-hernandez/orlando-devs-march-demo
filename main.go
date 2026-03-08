@@ -23,6 +23,10 @@ func main() {
 	mux.HandleFunc("GET /version", app.VersionHandler)
 	mux.HandleFunc("GET /feature-flags", app.FeatureFlagsHandler)
 
+	if cfg.FfA {
+		mux.HandleFunc("GET /hello", app.HelloHandler)
+	}
+
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
 		Handler:      LoggingMiddleware(mux),

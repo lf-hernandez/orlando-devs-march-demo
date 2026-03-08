@@ -20,4 +20,4 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway up --service ${{ vars.RAILWAY_SERVICE }} --environment production --detach
+        run: railway up --service ${{ vars.RAILWAY_SERVICE }} --environment production

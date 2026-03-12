@@ -23,7 +23,7 @@ func main() {
 	mux.HandleFunc("GET /version", app.VersionHandler)
 	mux.HandleFunc("GET /feature-flags", app.FeatureFlagsHandler)
 
-	if cfg.FfA {
+	if cfg.FeatureHello {
 		mux.HandleFunc("GET /hello", app.HelloHandler)
 	}
 

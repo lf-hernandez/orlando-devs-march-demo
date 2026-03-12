@@ -10,9 +10,7 @@ type Config struct {
 	Commit    string
 	BuildTime string
 
-	FfA bool
-	FfB bool
-	FfC bool
+	FeatureHello bool
 }
 
 func NewConfig() Config {
@@ -27,13 +25,11 @@ func NewConfig() Config {
 	}
 
 	return Config{
-		Port:      port,
-		Env:       env,
-		Version:   Version,
-		Commit:    Commit,
-		BuildTime: BuildTime,
-		FfA:       os.Getenv("FF_A") == "true",
-		FfB:       os.Getenv("FF_B") == "true",
-		FfC:       os.Getenv("FF_C") == "true",
+		Port:         port,
+		Env:          env,
+		Version:      Version,
+		Commit:       Commit,
+		BuildTime:    BuildTime,
+		FeatureHello: os.Getenv("FEATURE_HELLO") == "true",
 	}
 }

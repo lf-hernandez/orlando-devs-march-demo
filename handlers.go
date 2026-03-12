@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type App struct {
@@ -57,4 +58,10 @@ func (a *App) HelloHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func (a *App) SlowHandler(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(30 * time.Second)
+
+	http.Error(w, "server is hanging", http.StatusServiceUnavailable)
 }

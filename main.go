@@ -22,6 +22,7 @@ func main() {
 	mux.HandleFunc("GET /health", app.HealthHandler)
 	mux.HandleFunc("GET /version", app.VersionHandler)
 	mux.HandleFunc("GET /feature-flags", app.FeatureFlagsHandler)
+	mux.HandleFunc("GET /slow", app.SlowHandler)
 
 	if cfg.FeatureHello {
 		mux.HandleFunc("GET /hello", app.HelloHandler)
@@ -31,7 +32,7 @@ func main() {
 		Addr:         ":" + cfg.Port,
 		Handler:      LoggingMiddleware(mux),
 		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		WriteTimeout: 35 * time.Second,
 		IdleTimeout:  120 * time.Second,
 	}
 

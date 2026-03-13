@@ -8,6 +8,8 @@
 
 [![cd (github-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-github-flow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-github-flow.yml)
 
+[![cd (gitlab-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitlab-flow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitlab-flow.yml)
+
 ## Getting Started
 
 ### To build and run locally:

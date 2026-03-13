@@ -6,11 +6,17 @@ on:
     branches: [main, 'feature/**']
     types: [completed]
 
+permissions:
+  contents: read
+
 jobs:
   deploy-preview:
     runs-on: ubuntu-24.04
     if: startsWith(github.event.workflow_run.head_branch, 'feature/') && github.event.workflow_run.conclusion == 'success'
     environment: staging
+    concurrency:
+      group: cd-github-flow-staging
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit
@@ -53,6 +59,9 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
     environment: production
+    concurrency:
+      group: cd-github-flow-production
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit

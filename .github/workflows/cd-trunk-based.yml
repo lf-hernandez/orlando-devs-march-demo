@@ -6,11 +6,17 @@ on:
     branches: [main]
     types: [completed]
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-24.04
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment: production
+    concurrency:
+      group: cd-trunk-based-production
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit

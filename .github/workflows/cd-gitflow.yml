@@ -6,11 +6,17 @@ on:
     branches: [develop, 'release/**', 'hotfix/**', main]
     types: [completed]
 
+permissions:
+  contents: read
+
 jobs:
   deploy-develop:
     runs-on: ubuntu-24.04
     if: github.event.workflow_run.head_branch == 'develop' && github.event.workflow_run.conclusion == 'success'
     environment: develop
+    concurrency:
+      group: cd-gitflow-develop
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit
@@ -51,6 +57,9 @@ jobs:
     runs-on: ubuntu-24.04
     if: startsWith(github.event.workflow_run.head_branch, 'hotfix/') && github.event.workflow_run.conclusion == 'success'
     environment: develop
+    concurrency:
+      group: cd-gitflow-develop
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit
@@ -93,6 +102,9 @@ jobs:
     runs-on: ubuntu-24.04
     if: startsWith(github.event.workflow_run.head_branch, 'release/') && github.event.workflow_run.conclusion == 'success'
     environment: staging
+    concurrency:
+      group: cd-gitflow-staging
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit
@@ -135,6 +147,9 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
     environment: production
+    concurrency:
+      group: cd-gitflow-production
+      cancel-in-progress: false
 
     steps:
       - name: Checkout tested commit

@@ -1,0 +1,90 @@
+name: cd (github-flow)
+
+on:
+  workflow_run:
+    workflows: [ci]
+    branches: [main, 'feature/**']
+    types: [completed]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-24.04
+    if: startsWith(github.event.workflow_run.head_branch, 'feature/') && github.event.workflow_run.conclusion == 'success'
+    environment: staging
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Install Railway CLI
+        run: bash <(curl -fsSL cli.new/install.sh)
+
+      - name: Compute build metadata
+        run: |
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          FEATURE_NAME="${BRANCH#feature/}"
+          echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
+          echo "VERSION=${FEATURE_NAME}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+
+      - name: Set Railway variables
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway variables set \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment staging \
+            VERSION="$VERSION" \
+            COMMIT="$COMMIT" \
+            BUILD_TIME="$BUILD_TIME"
+
+      - name: Deploy preview to Railway (staging)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment staging \
+            --ci
+
+  deploy-production:
+    runs-on: ubuntu-24.04
+    if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
+    environment: production
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Install Railway CLI
+        run: bash <(curl -fsSL cli.new/install.sh)
+
+      - name: Compute build metadata
+        run: |
+          echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
+          echo "VERSION=main-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+
+      - name: Set Railway variables
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway variables set \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment production \
+            VERSION="$VERSION" \
+            COMMIT="$COMMIT" \
+            BUILD_TIME="$BUILD_TIME"
+
+      - name: Deploy to Railway (production)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment production \
+            --ci

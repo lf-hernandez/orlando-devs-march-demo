@@ -6,6 +6,8 @@
 
 [![cd (git-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitflow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitflow.yml)
 
+[![cd (github-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-github-flow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-github-flow.yml)
+
 ## Getting Started
 
 ### To build and run locally:

@@ -3,7 +3,7 @@ name: cd (git-flow)
 on:
   workflow_run:
     workflows: [ci]
-    branches: [develop, 'release/**', main]
+    branches: [develop, 'release/**', 'hotfix/**', main]
     types: [completed]
 
 jobs:
@@ -25,6 +25,48 @@ jobs:
         run: |
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
           echo "VERSION=develop-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+
+      - name: Set Railway variables
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway variables set \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment develop \
+            VERSION="$VERSION" \
+            COMMIT="$COMMIT" \
+            BUILD_TIME="$BUILD_TIME"
+
+      - name: Deploy to Railway (develop)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up \
+            --service "${{ vars.RAILWAY_SERVICE }}" \
+            --environment develop \
+            --ci
+
+  deploy-hotfix:
+    runs-on: ubuntu-24.04
+    if: startsWith(github.event.workflow_run.head_branch, 'hotfix/') && github.event.workflow_run.conclusion == 'success'
+    environment: develop
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Install Railway CLI
+        run: bash <(curl -fsSL cli.new/install.sh)
+
+      - name: Compute build metadata
+        run: |
+          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          HOTFIX_NAME="${BRANCH#hotfix/}"
+          echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
+          echo "VERSION=hotfix-${HOTFIX_NAME}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables

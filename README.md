@@ -4,6 +4,8 @@
 
 [![cd (trunk-based)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-trunk-based.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-trunk-based.yml)
 
+[![cd (git-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitflow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitflow.yml)
+
 ## Getting Started
 
 ### To build and run locally:

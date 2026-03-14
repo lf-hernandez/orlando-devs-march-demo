@@ -10,6 +10,23 @@
 
 [![cd (gitlab-flow)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitlab-flow.yml/badge.svg)](https://github.com/lf-hernandez/orlando-devs-march-demo/actions/workflows/cd-gitlab-flow.yml)
 
+## CD Workflows
+
+Each CD workflow triggers on successful completion of the CI workflow on specific branches and deploys to the corresponding Railway environment.
+
+| Workflow | Trigger Branch(es) | Deploys To |
+|---|---|---|
+| Trunk-based | `main` | production |
+| Git Flow | `develop` | develop |
+| Git Flow | `hotfix/**` | develop |
+| Git Flow | `release/**` | staging |
+| Git Flow | `main` | production |
+| GitHub Flow | `feature/**` | staging (preview) |
+| GitHub Flow | `main` | production |
+| GitLab Flow | `main` | develop |
+| GitLab Flow | `staging` | staging |
+| GitLab Flow | `production` | production |
+
 ## Getting Started
 
 ### To build and run locally:

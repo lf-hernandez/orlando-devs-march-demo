@@ -29,11 +29,12 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           BRANCH="${{ github.event.workflow_run.head_branch }}"
           FEATURE_NAME="${BRANCH#feature/}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=${FEATURE_NAME}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=${FEATURE_NAME}-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:
@@ -74,9 +75,10 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=main-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=main-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:

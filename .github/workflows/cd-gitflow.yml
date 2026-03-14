@@ -29,9 +29,10 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=develop-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=develop-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:
@@ -72,11 +73,12 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           BRANCH="${{ github.event.workflow_run.head_branch }}"
           HOTFIX_NAME="${BRANCH#hotfix/}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=hotfix-${HOTFIX_NAME}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=hotfix-${HOTFIX_NAME}-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:
@@ -117,11 +119,12 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           BRANCH="${{ github.event.workflow_run.head_branch }}"
           RELEASE_VERSION="${BRANCH#release/}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=${RELEASE_VERSION}-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=${RELEASE_VERSION}-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:
@@ -162,9 +165,10 @@ jobs:
 
       - name: Compute build metadata
         run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=main-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
-          echo "COMMIT=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_ENV"
+          echo "VERSION=main-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables
         env:

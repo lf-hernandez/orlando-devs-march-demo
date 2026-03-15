@@ -16,7 +16,7 @@ type Config struct {
 func NewConfig() Config {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "5000"
+		port = "3000"
 	}
 
 	env := os.Getenv("ENV")

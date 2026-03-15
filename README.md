@@ -33,7 +33,7 @@ Each CD workflow triggers on successful completion of the CI workflow on specifi
 
 ```bash
   docker build -t orlando-devs-demo .
-  docker run -p 5000:5000 orlando-devs-demo
+  docker run -p 3000:3000 orlando-devs-demo
 ```
 
 ### To inject version info at build time:

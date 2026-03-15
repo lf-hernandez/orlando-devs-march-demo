@@ -1,37 +1,37 @@
 name: cd (trunk-based)
 
 on:
-  workflow_run:
-    workflows: [ci]
-    branches: [main]
-    types: [completed]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   deploy:
     runs-on: ubuntu-24.04
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.ref_name == 'main'
+    timeout-minutes: 15
     environment: production
     concurrency:
       group: cd-trunk-based-production
       cancel-in-progress: false
 
     steps:
-      - name: Checkout tested commit
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install Railway CLI
-        run: bash <(curl -fsSL cli.new/install.sh)
+        run: npm install -g @railway/cli@4.31.0
 
       - name: Compute build metadata
         run: |
-          SHA="${{ github.event.workflow_run.head_sha }}"
+          SHA="${{ github.sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
-          echo "VERSION=${{ github.event.workflow_run.head_branch }}-${SHA:0:7}" >> "$GITHUB_ENV"
+          echo "VERSION=${{ github.ref_name }}-${SHA:0:7}" >> "$GITHUB_ENV"
           echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
 
       - name: Set Railway variables

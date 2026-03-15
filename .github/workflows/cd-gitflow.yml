@@ -1,35 +1,35 @@
 name: cd (git-flow)
 
 on:
-  workflow_run:
-    workflows: [ci]
-    branches: [develop, 'release/**', 'hotfix/**', main]
-    types: [completed]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   deploy-develop:
     runs-on: ubuntu-24.04
-    if: github.event.workflow_run.head_branch == 'develop' && github.event.workflow_run.conclusion == 'success'
+    if: github.ref_name == 'develop'
+    timeout-minutes: 15
     environment: develop
     concurrency:
       group: cd-gitflow-develop
       cancel-in-progress: false
 
     steps:
-      - name: Checkout tested commit
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install Railway CLI
-        run: bash <(curl -fsSL cli.new/install.sh)
+        run: npm install -g @railway/cli@4.31.0
 
       - name: Compute build metadata
         run: |
-          SHA="${{ github.event.workflow_run.head_sha }}"
+          SHA="${{ github.sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
           echo "VERSION=develop-${SHA:0:7}" >> "$GITHUB_ENV"
           echo "COMMIT=${SHA}" >> "$GITHUB_ENV"
@@ -56,25 +56,24 @@ jobs:
 
   deploy-hotfix:
     runs-on: ubuntu-24.04
-    if: startsWith(github.event.workflow_run.head_branch, 'hotfix/') && github.event.workflow_run.conclusion == 'success'
+    if: startsWith(github.ref_name, 'hotfix/')
+    timeout-minutes: 15
     environment: develop
     concurrency:
       group: cd-gitflow-develop
       cancel-in-progress: false
 
     steps:
-      - name: Checkout tested commit
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install Railway CLI
-        run: bash <(curl -fsSL cli.new/install.sh)
+        run: npm install -g @railway/cli@4.31.0
 
       - name: Compute build metadata
         run: |
-          SHA="${{ github.event.workflow_run.head_sha }}"
-          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          SHA="${{ github.sha }}"
+          BRANCH="${{ github.ref_name }}"
           HOTFIX_NAME="${BRANCH#hotfix/}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
           echo "VERSION=hotfix-${HOTFIX_NAME}-${SHA:0:7}" >> "$GITHUB_ENV"
@@ -102,25 +101,24 @@ jobs:
 
   deploy-staging:
     runs-on: ubuntu-24.04
-    if: startsWith(github.event.workflow_run.head_branch, 'release/') && github.event.workflow_run.conclusion == 'success'
+    if: startsWith(github.ref_name, 'release/')
+    timeout-minutes: 15
     environment: staging
     concurrency:
       group: cd-gitflow-staging
       cancel-in-progress: false
 
     steps:
-      - name: Checkout tested commit
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install Railway CLI
-        run: bash <(curl -fsSL cli.new/install.sh)
+        run: npm install -g @railway/cli@4.31.0
 
       - name: Compute build metadata
         run: |
-          SHA="${{ github.event.workflow_run.head_sha }}"
-          BRANCH="${{ github.event.workflow_run.head_branch }}"
+          SHA="${{ github.sha }}"
+          BRANCH="${{ github.ref_name }}"
           RELEASE_VERSION="${BRANCH#release/}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
           echo "VERSION=${RELEASE_VERSION}-${SHA:0:7}" >> "$GITHUB_ENV"
@@ -148,24 +146,23 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-24.04
-    if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
+    if: github.ref_name == 'main'
+    timeout-minutes: 15
     environment: production
     concurrency:
       group: cd-gitflow-production
       cancel-in-progress: false
 
     steps:
-      - name: Checkout tested commit
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install Railway CLI
-        run: bash <(curl -fsSL cli.new/install.sh)
+        run: npm install -g @railway/cli@4.31.0
 
       - name: Compute build metadata
         run: |
-          SHA="${{ github.event.workflow_run.head_sha }}"
+          SHA="${{ github.sha }}"
           echo "BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "$GITHUB_ENV"
           echo "VERSION=main-${SHA:0:7}" >> "$GITHUB_ENV"
           echo "COMMIT=${SHA}" >> "$GITHUB_ENV"

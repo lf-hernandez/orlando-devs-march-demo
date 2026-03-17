@@ -31,9 +31,9 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      LoggingMiddleware(mux),
+		Handler:      recovery(LoggingMiddleware(mux)),
 		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 35 * time.Second,
+		WriteTimeout: 40 * time.Second,
 		IdleTimeout:  120 * time.Second,
 	}
 
